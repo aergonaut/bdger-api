@@ -33,7 +33,7 @@ module Bdge
       if @badge
         respond_to do |f|
           f.json { json @badge }
-          f.html { redirect "https://#{settings.target_host}/badges/#{@badge.slug}" }
+          f.html { redirect "https://#{settings.target_host}/badges/#{@badge[:slug]}" }
         end
       else
         404
@@ -45,7 +45,7 @@ module Bdge
       if @user
         respond_to do |f|
           f.json { json @user }
-          f.html { redirect "https://#{settings.target_host}/#{@user.username}" }
+          f.html { redirect "https://#{settings.target_host}/#{@user[:username]}" }
         end
       else
         404
@@ -71,9 +71,9 @@ module Bdge
 
       def to_json
         Yajl::Encoder.encode({
-          username: self.username,
-          url: "https://#{Bdge::App.settings.target_host}/#{self.username}",
-          website: self.website,
+          username: self[:username],
+          url: "https://#{Bdge::App.settings.target_host}/#{self[:username]}",
+          website: self[:website],
           badges: self.achievements
         })
       end
@@ -84,8 +84,8 @@ module Bdge
 
       def to_json
         Yajl::Encoder.encode({
-          name: self.name,
-          url: "https://#{Bdge::App.settings.target_host}/badges/#{self.slug}"
+          name: self[:name],
+          url: "https://#{Bdge::App.settings.target_host}/badges/#{self[:slug]}"
         })
       end
     end
@@ -97,10 +97,10 @@ module Bdge
       def to_json
         Yajl::Encoder.encode({
           badge: {
-            name: self.badge.name
+            name: self.badge[:name]
           },
-          url: "http://#{Bdge::App.settings.hostname}/#{self.short_hash}",
-          redirect_url: "https://#{Bdge::App.settings.target_host}/#{self.user[:username]}/badges/#{self.slug}"
+          url: "http://#{Bdge::App.settings.hostname}/#{self[:short_hash]}",
+          redirect_url: "https://#{Bdge::App.settings.target_host}/#{self.user[:username]}/badges/#{self[:slug]}"
         })
       end
     end
