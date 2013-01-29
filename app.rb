@@ -13,7 +13,7 @@ module Bdge
     set :target_host, "polar-wave-4365.herokuapp.com"
 
     get "/" do
-      haml :root
+      redirect "https://#{settings.target_host}"
     end
 
     get "/version" do
