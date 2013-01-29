@@ -20,14 +20,32 @@ module Bdge
       json version: settings.version
     end
 
+    get "/badges" do
+      @badges = Badge.all
+      respond_to do |f|
+        f.json { json @badges }
+        f.html { redirect "https://#{settings.target_host}/badges" }
+      end
+    end
+
+    get "/badges/:slug" do
+      @badge = Badge.where(slug: params[:slug]).first
+      if @badge
+        respond_to do |f|
+          f.json { json @badge }
+          f.html { redirect "https://#{settings.target_host}/badges/#{@badge.slug}" }
+        end
+      else
+        404
+      end
+    end
+
     get "/users/:username" do
       @user = User.where(username: params[:username]).first
       if @user
         respond_to do |f|
-          f.json { json username: @user.username,
-                        url: "https://#{settings.target_host}/#{@user.username}",
-                        website: @user.website,
-                        badges: @user.achievements }
+          f.json { json @user }
+          f.html { redirect "https://#{settings.target_host}/#{@user.username}" }
         end
       else
         404
@@ -38,8 +56,7 @@ module Bdge
       @achievement = Achievement.where(short_hash: params[:hash]).first
       if @achievement
         respond_to do |f|
-          f.json { json url: "http://#{settings.hostname}/#{params[:hash]}",
-                        redirect_url: "https://#{settings.target_host}/#{@achievement.user[:username]}/badges/#{@achievement[:slug]}" }
+          f.json { json @achievement }
           f.html { redirect "https://#{settings.target_host}/#{@achievement.user[:username]}/badges/#{@achievement[:slug]}" }
         end
       else
@@ -51,9 +68,26 @@ module Bdge
 
     class User < Sequel::Model
       one_to_many :achievements
+
+      def to_json
+        Yajl::Encoder.encode({
+          username: self.username,
+          url: "https://#{Bdge::App.settings.target_host}/#{self.username}",
+          website: self.website,
+          badges: self.achievements
+        })
+      end
     end
 
     class Badge < Sequel::Model
+      one_to_many :achievements
+
+      def to_json
+        Yajl::Encoder.encode({
+          name: self.name,
+          url: "https://#{Bdge::App.settings.target_host}/badges/#{self.slug}"
+        })
+      end
     end
 
     class Achievement < Sequel::Model
@@ -65,7 +99,8 @@ module Bdge
           badge: {
             name: self.badge.name
           },
-          url: "http://#{Bdge::App.settings.hostname}/#{self.short_hash}"
+          url: "http://#{Bdge::App.settings.hostname}/#{self.short_hash}",
+          redirect_url: "https://#{Bdge::App.settings.target_host}/#{self.user[:username]}/badges/#{self.slug}"
         })
       end
     end

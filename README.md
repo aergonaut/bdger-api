@@ -1,6 +1,6 @@
 # bdge.co API
 
-bdge.co exposes and API for interacting with Bdger.
+bdge.co exposes an API for interacting with [Bdger](http://www.bdger.com).
 
 Currently the API is read-only. Future versions will allow authentication and creation/update/deletion of resources.
 
