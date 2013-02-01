@@ -10,7 +10,7 @@ module Bdge
     set :json_encoder, Yajl::Encoder
 
     set :hostname, "bdge.co"
-    set :target_host, "polar-wave-4365.herokuapp.com"
+    set :target_host, "www.bdger.com"
 
     get "/" do
       redirect "https://#{settings.target_host}"
