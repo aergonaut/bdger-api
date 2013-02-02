@@ -23,8 +23,8 @@ module Bdge
     get "/badges" do
       @badges = Badge.all
       respond_to do |f|
-        f.json { json @badges }
         f.html { redirect "https://#{settings.target_host}/badges" }
+        f.json { json @badges }
       end
     end
 
@@ -32,8 +32,8 @@ module Bdge
       @badge = Badge.where(slug: params[:slug]).first
       if @badge
         respond_to do |f|
-          f.json { json @badge }
           f.html { redirect "https://#{settings.target_host}/badges/#{@badge[:slug]}" }
+          f.json { json @badge }
         end
       else
         404
@@ -44,8 +44,8 @@ module Bdge
       @user = User.where(username: params[:username]).first
       if @user
         respond_to do |f|
-          f.json { json @user }
           f.html { redirect "https://#{settings.target_host}/#{@user[:username]}" }
+          f.json { json @user }
         end
       else
         404
@@ -56,8 +56,8 @@ module Bdge
       @achievement = Achievement.where(short_hash: params[:hash]).first
       if @achievement
         respond_to do |f|
-          f.json { json @achievement }
           f.html { redirect "https://#{settings.target_host}/#{@achievement.user[:username]}/badges/#{@achievement[:slug]}" }
+          f.json { json @achievement }
         end
       else
         404
